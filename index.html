@@ -188,7 +188,12 @@ input[type="range"] {
 </div>
 
 <script>
+
 let state = {
+  name: '',
+  completed: { slides: false, parts: false, match: false, vocab: false, quiz: false }
+};
+
   name: '',
   completed: { slides: false, parts: false, match: false, vocab: false, quiz: false }
 };
@@ -322,6 +327,15 @@ const flowerSlides = [
   { img: "assets/images/02_stamen_closeup.png", text: "雄蕊負責產生花粉。" },
   { img: "assets/images/03_pistil_closeup.png", text: "雌蕊負責接收花粉同產生種子。" },
   { img: "assets/images/04_flower_cross_section.png", text: "橫切面可以同時睇到雄蕊同雌蕊。" },
+  { img: "assets/images/05_pollen_grains.png", text: "花粉係雄蕊產生嘅。" },
+  { img: "assets/images/06_ovary_seeds.png", text: "子房入面會形成種子。" },
+  { img: "assets/images/07_pollination_before.png", text: "授粉前，花粉喺雄蕊度。" },
+  { img: "assets/images/08_pollination_after.png", text: "授粉後，花粉去到雌蕊度。" },
+];
+  { img: "assets/images/01_flower_overview.png", text: "這是一朵完整的花，有雄蕊同雌蕊。" },
+  { img: "assets/images/02_stamen_closeup.png", text: "雄蕊負責產生花粉。" },
+  { img: "assets/images/03_pistil_closeup.png", text: "雌蕊負責接收花粉同產生種子。" },
+  { img: "assets/images/04_flower_cross_section.png", text: "橫切面可以同時睇到雄蕊同雌蕊。" },
 ];
 
 function renderSlide() {
@@ -333,6 +347,7 @@ function renderSlide() {
 function nextSlide() {
   currentSlideIndex = (currentSlideIndex + 1) % flowerSlides.length;
   renderSlide();
+  if (currentSlideIndex === 0) markCompleted("slides");
 }
 
 function prevSlide() {
@@ -377,6 +392,39 @@ function checkMatch() {
   }
 }
 
+
+let currentQuizLevel = 1;
+let quizQuestions = [
+  { q: "呢個係邊個部分？", img: "assets/images/11_assess_flower1.png", opts: ["雄蕊", "雌蕊", "花瓣"], ans: 0 },
+  { q: "雄蕊嘅功能係？", img: "assets/images/02_stamen_closeup.png", opts: ["產生花粉", "產生種子", "接收花粉"], ans: 0 },
+  { q: "雌蕊嘅功能係？", img: "assets/images/03_pistil_closeup.png", opts: ["產生花粉", "產生種子", "傳播花粉"], ans: 1 },
+];
+
+function startQuizLevel(level) {
+  currentQuizLevel = level;
+  // For now, just show the first question
+  goTo('quiz');
+  document.getElementById('quizResult').innerHTML = '';
+}
+
+function checkAnswer(choice) {
+  const result = document.getElementById('quizResult');
+  if (choice === 0) {
+    result.innerHTML = '✅ 正確！';
+    result.style.color = '#58cc02';
+    showConfetti();
+    setTimeout(() => {
+      showCertificate(100);
+    }, 1500);
+  } else {
+    result.innerHTML = '❌ 唔啱，再試一次';
+    result.style.color = '#ff4b4b';
+    setTimeout(() => {
+      result.innerHTML = '';
+    }, 1500);
+  }
+}
+
 function checkAnswer(choice) {
   const result = document.getElementById('quizResult');
   if (choice === 1) {
@@ -393,6 +441,30 @@ function checkAnswer(choice) {
     }, 1500);
   }
 }
+
+function updateHubStatus() {
+  // Can be expanded later with visual indicators
+  localStorage.setItem('flowerCompleted', JSON.stringify(state.completed));
+}
+
+function markCompleted(section) {
+  state.completed[section] = true;
+  updateHubStatus();
+}
+
+function showConfetti() {
+  const colors = ['#f44336','#2196F3','#4CAF50','#FF9800','#9C27B0','#FFD700'];
+  for (let i = 0; i < 15; i++) {
+    const c = document.createElement('div');
+    c.style.cssText = `position:fixed;top:-10px;left:${Math.random()*100}vw;width:10px;height:10px;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:50%;z-index:9999;animation:confettiFall 2s linear forwards`;
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 2000);
+  }
+}
+
+const style = document.createElement('style');
+style.innerHTML = `@keyframes confettiFall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }`;
+document.head.appendChild(style);
 </script>
 
 <!-- Settings Panel -->
@@ -516,7 +588,44 @@ function checkAnswer(choice) {
   </div>
 </div>
 
+
 <!-- MATCHING -->
+<div id="match" class="page">
+  <div style="max-width:420px; width:100%; text-align:center;">
+    <div style="font-size:1.8em; font-weight:800; margin-bottom:16px;">🔗 功能配對</div>
+    <div style="font-size:1.2em; color:#666; margin-bottom:20px;">點擊左邊配對右邊</div>
+    
+    <div style="display:flex; gap:20px; justify-content:center; margin-bottom:24px;">
+      <div>
+        <div onclick="matchLeft(1)" style="background:#fff; border:3px solid #e5e5e5; border-radius:16px; padding:12px; margin-bottom:12px; cursor:pointer; transition:all 0.2s;">
+          <img src="assets/images/14_match_stamen.png" style="width:120px; border-radius:12px;">
+        </div>
+        <div onclick="matchLeft(2)" style="background:#fff; border:3px solid #e5e5e5; border-radius:16px; padding:12px; margin-bottom:12px; cursor:pointer; transition:all 0.2s;">
+          <img src="assets/images/15_match_pistil.png" style="width:120px; border-radius:12px;">
+        </div>
+        <div onclick="matchLeft(3)" style="background:#fff; border:3px solid #e5e5e5; border-radius:16px; padding:12px; cursor:pointer; transition:all 0.2s;">
+          <img src="assets/images/05_pollen_grains.png" style="width:120px; border-radius:12px;">
+        </div>
+      </div>
+      <div>
+        <div onclick="matchRight(1)" style="background:#fff; border:3px solid #e5e5e5; border-radius:16px; padding:16px; margin-bottom:12px; cursor:pointer; font-size:1.2em; transition:all 0.2s;">
+          產生花粉
+        </div>
+        <div onclick="matchRight(2)" style="background:#fff; border:3px solid #e5e5e5; border-radius:16px; padding:16px; margin-bottom:12px; cursor:pointer; font-size:1.2em; transition:all 0.2s;">
+          產生種子
+        </div>
+        <div onclick="matchRight(3)" style="background:#fff; border:3px solid #e5e5e5; border-radius:16px; padding:16px; cursor:pointer; font-size:1.2em; transition:all 0.2s;">
+          花粉顆粒
+        </div>
+      </div>
+    </div>
+    
+    <div id="matchResult" style="font-size:1.4em; min-height:40px; margin-bottom:20px;"></div>
+    
+    <button onclick="goTo('hub')" style="padding:14px 32px; background:#fff; border:2px solid #e5e5e5; border-radius:12px; font-size:1.1em;">🏠 返回中心</button>
+  </div>
+</div>
+
 <div id="match" class="page">
   <div style="max-width:420px; width:100%; text-align:center;">
     <div style="font-size:1.8em; font-weight:800; margin-bottom:16px;">🔗 功能配對</div>
@@ -586,6 +695,27 @@ function checkAnswer(choice) {
     <div id="quizResult" style="font-size:1.4em; min-height:40px; margin-bottom:20px;"></div>
     
     <button onclick="goTo('hub')" style="padding:14px 32px; background:#fff; border:2px solid #e5e5e5; border-radius:12px; font-size:1.1em;">🏠 返回中心</button>
+  </div>
+</div>
+
+<!-- DIFFICULTY -->
+<div id="difficulty" class="page">
+  <div style="max-width:420px; width:100%; text-align:center;">
+    <div style="font-size:1.8em; font-weight:800; margin-bottom:24px;">選擇難度</div>
+    
+    <div style="display:flex; flex-direction:column; gap:16px; margin-bottom:24px;">
+      <button onclick="startQuizLevel(1)" style="padding:18px; font-size:1.3em; background:#dbf8c5; border:3px solid #58cc02; border-radius:16px; cursor:pointer;">
+        🟢 初階（容易）
+      </button>
+      <button onclick="startQuizLevel(2)" style="padding:18px; font-size:1.3em; background:#fff; border:3px solid #e5e5e5; border-radius:16px; cursor:pointer;">
+        🟡 中階（普通）
+      </button>
+      <button onclick="startQuizLevel(3)" style="padding:18px; font-size:1.3em; background:#fff; border:3px solid #e5e5e5; border-radius:16px; cursor:pointer;">
+        🔴 高階（較難）
+      </button>
+    </div>
+    
+    <button onclick="goTo('quiz')" style="padding:14px 32px; background:#fff; border:2px solid #e5e5e5; border-radius:12px; font-size:1.1em;">⬅️ 返回</button>
   </div>
 </div>
 </body>
