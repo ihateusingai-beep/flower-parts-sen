@@ -163,7 +163,7 @@ input[type="range"] {
     <div id="hubGreeting" style="font-size:1.8em; margin-bottom:24px; font-weight:700;"></div>
     
     <div class="hub-grid">
-      <div class="hub-card" onclick="goTo('slides')">
+      <div class="hub-card" onclick="initSlides()">
         <div class="hub-icon">📖</div>
         <div class="hub-title">花的故事</div>
       </div>
@@ -315,6 +315,36 @@ function showCertificate(percent) {
   
   goTo('certificate');
 }
+
+let currentSlideIndex = 0;
+const flowerSlides = [
+  { img: "assets/images/01_flower_overview.png", text: "這是一朵完整的花，有雄蕊同雌蕊。" },
+  { img: "assets/images/02_stamen_closeup.png", text: "雄蕊負責產生花粉。" },
+  { img: "assets/images/03_pistil_closeup.png", text: "雌蕊負責接收花粉同產生種子。" },
+  { img: "assets/images/04_flower_cross_section.png", text: "橫切面可以同時睇到雄蕊同雌蕊。" },
+];
+
+function renderSlide() {
+  const slide = flowerSlides[currentSlideIndex];
+  document.getElementById('slideImg').src = slide.img;
+  document.getElementById('slideText').innerHTML = slide.text;
+}
+
+function nextSlide() {
+  currentSlideIndex = (currentSlideIndex + 1) % flowerSlides.length;
+  renderSlide();
+}
+
+function prevSlide() {
+  currentSlideIndex = (currentSlideIndex - 1 + flowerSlides.length) % flowerSlides.length;
+  renderSlide();
+}
+
+function initSlides() {
+  currentSlideIndex = 0;
+  renderSlide();
+  goTo('slides');
+}
 </script>
 
 <!-- Settings Panel -->
@@ -393,6 +423,48 @@ function showCertificate(percent) {
     </div>
     
     <button onclick="goTo('hub')" style="padding:16px 40px; background:#58cc02; color:#fff; border:none; border-radius:16px; font-size:1.3em; font-weight:800; margin-top:20px;">返回中心</button>
+  </div>
+</div>
+
+<!-- SLIDES -->
+<div id="slides" class="page">
+  <div style="max-width:420px; width:100%; text-align:center;">
+    <div style="font-size:1.8em; font-weight:800; margin-bottom:16px;">📖 花的故事</div>
+    
+    <div id="slideContent" style="margin-bottom:20px;">
+      <img id="slideImg" src="assets/images/01_flower_overview.png" style="width:100%; max-width:380px; border-radius:16px; border:3px solid #e5e5e5; margin-bottom:16px;">
+      <div id="slideText" style="font-size:1.4em; line-height:1.6; padding:16px; background:#fff; border:2px solid #e5e5e5; border-radius:16px;"></div>
+    </div>
+    
+    <div style="display:flex; gap:12px; justify-content:center;">
+      <button onclick="prevSlide()" style="padding:12px 24px; background:#fff; border:2px solid #e5e5e5; border-radius:12px; font-size:1.1em;">⬅️ 上一頁</button>
+      <button onclick="nextSlide()" style="padding:12px 24px; background:#58cc02; color:#fff; border:none; border-radius:12px; font-size:1.1em; font-weight:700;">下一頁 ➡️</button>
+    </div>
+    
+    <button onclick="goTo('hub')" style="margin-top:20px; padding:12px 32px; background:#fff; border:2px solid #e5e5e5; border-radius:12px; font-size:1.1em;">🏠 返回中心</button>
+  </div>
+</div>
+
+<!-- PARTS EXPLAIN -->
+<div id="parts" class="page">
+  <div style="max-width:420px; width:100%; text-align:center;">
+    <div style="font-size:1.8em; font-weight:800; margin-bottom:16px;">📜 部分詳解</div>
+    
+    <div style="display:flex; flex-direction:column; gap:16px; margin-bottom:20px;">
+      <div style="background:#fff; border:2px solid #e5e5e5; border-radius:16px; padding:16px;">
+        <img src="assets/images/02_stamen_closeup.png" style="width:100%; border-radius:12px; margin-bottom:12px;">
+        <div style="font-size:1.4em; font-weight:700;">雄蕊（Stamen）</div>
+        <div style="font-size:1.2em; color:#666;">負責產生花粉</div>
+      </div>
+      
+      <div style="background:#fff; border:2px solid #e5e5e5; border-radius:16px; padding:16px;">
+        <img src="assets/images/03_pistil_closeup.png" style="width:100%; border-radius:12px; margin-bottom:12px;">
+        <div style="font-size:1.4em; font-weight:700;">雌蕊（Pistil）</div>
+        <div style="font-size:1.2em; color:#666;">負責接收花粉同產生種子</div>
+      </div>
+    </div>
+    
+    <button onclick="goTo('hub')" style="padding:14px 32px; background:#fff; border:2px solid #e5e5e5; border-radius:12px; font-size:1.1em;">🏠 返回中心</button>
   </div>
 </div>
 </body>
