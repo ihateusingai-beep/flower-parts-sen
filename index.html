@@ -363,6 +363,10 @@ const flowerSlides = [
   { img: "assets/images/06_ovary_seeds.png", text: "子房入面會形成種子。" },
   { img: "assets/images/07_pollination_before.png", text: "授粉前，花粉喺雄蕊度。" },
   { img: "assets/images/08_pollination_after.png", text: "授粉後，花粉去到雌蕊度。" },
+  { img: "assets/images/09_pollen_tube.png", text: "花粉管會生長去子房。" },
+  { img: "assets/images/23_fertilization.png", text: "花粉同卵結合就係受精。" },
+  { img: "assets/images/24_seed_formation.png", text: "受精後會形成種子。" },
+  { img: "assets/images/27_pollination_process.png", text: "呢個係完整嘅授粉過程。" },
 ];
   { img: "assets/images/01_flower_overview.png", text: "這是一朵完整的花，有雄蕊同雌蕊。" },
   { img: "assets/images/02_stamen_closeup.png", text: "雄蕊負責產生花粉。" },
@@ -566,6 +570,34 @@ function showConfetti() {
 const style = document.createElement('style');
 style.innerHTML = `@keyframes confettiFall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }`;
 document.head.appendChild(style);
+
+let exitCallback = null;
+
+function showExitConfirm(callback) {
+  exitCallback = callback;
+  document.getElementById('exitConfirm').style.display = 'flex';
+}
+
+function hideExitConfirm() {
+  document.getElementById('exitConfirm').style.display = 'none';
+  exitCallback = null;
+}
+
+function doExit() {
+  hideExitConfirm();
+  if (exitCallback) exitCallback();
+}
+
+// Add exit confirmation to back buttons
+function addExitConfirm() {
+  const backBtns = document.querySelectorAll('.btn-back, button[onclick*="goTo('hub')"]');
+  backBtns.forEach(btn => {
+    const originalOnclick = btn.getAttribute('onclick');
+    if (originalOnclick && originalOnclick.includes('goTo')) {
+      btn.setAttribute('onclick', `showExitConfirm(() => { ${originalOnclick} }); event.stopImmediatePropagation();`);
+    }
+  });
+}
 </script>
 
 <!-- Settings Panel -->
@@ -771,6 +803,22 @@ document.head.appendChild(style);
         <img src="assets/images/03_pistil_closeup.png" style="width:100%; border-radius:12px; margin-bottom:8px;">
         <div style="font-size:1.4em; font-weight:700;">雌蕊</div>
       </div>
+      <div onclick="speak('花粉')" style="background:#fff; border:2px solid #e5e5e5; border-radius:16px; padding:16px; cursor:pointer;">
+        <img src="assets/images/05_pollen_grains.png" style="width:100%; border-radius:12px; margin-bottom:8px;">
+        <div style="font-size:1.4em; font-weight:700;">花粉</div>
+      </div>
+      <div onclick="speak('種子')" style="background:#fff; border:2px solid #e5e5e5; border-radius:16px; padding:16px; cursor:pointer;">
+        <img src="assets/images/06_ovary_seeds.png" style="width:100%; border-radius:12px; margin-bottom:8px;">
+        <div style="font-size:1.4em; font-weight:700;">種子</div>
+      </div>
+      <div onclick="speak('花粉管')" style="background:#fff; border:2px solid #e5e5e5; border-radius:16px; padding:16px; cursor:pointer;">
+        <img src="assets/images/09_pollen_tube.png" style="width:100%; border-radius:12px; margin-bottom:8px;">
+        <div style="font-size:1.4em; font-weight:700;">花粉管</div>
+      </div>
+      <div onclick="speak('子房')" style="background:#fff; border:2px solid #e5e5e5; border-radius:16px; padding:16px; cursor:pointer;">
+        <img src="assets/images/24_seed_formation.png" style="width:100%; border-radius:12px; margin-bottom:8px;">
+        <div style="font-size:1.4em; font-weight:700;">子房</div>
+      </div>
     </div>
     
     <button onclick="goTo('hub')" style="padding:14px 32px; background:#fff; border:2px solid #e5e5e5; border-radius:12px; font-size:1.1em;">🏠 返回中心</button>
@@ -817,6 +865,18 @@ document.head.appendChild(style);
     </div>
     
     <button onclick="goTo('quiz')" style="padding:14px 32px; background:#fff; border:2px solid #e5e5e5; border-radius:12px; font-size:1.1em;">⬅️ 返回</button>
+  </div>
+</div>
+
+<!-- EXIT CONFIRM -->
+<div class="confirm-overlay" id="exitConfirm" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000; align-items:center; justify-content:center;">
+  <div style="background:#fff; border-radius:24px; padding:32px; max-width:320px; width:90%; text-align:center;">
+    <div style="font-size:1.6em; font-weight:800; margin-bottom:16px;">⚠️ 確認離開？</div>
+    <div style="font-size:1.3em; color:#666; margin-bottom:24px;">離開會丟失學習進度，你確定嗎？</div>
+    <div style="display:flex; gap:16px; justify-content:center;">
+      <button onclick="doExit()" style="padding:14px 32px; background:#ff4b4b; color:#fff; border:none; border-radius:12px; font-size:1.2em; font-weight:700;">離開</button>
+      <button onclick="hideExitConfirm()" style="padding:14px 32px; background:#fff; border:2px solid #e5e5e5; border-radius:12px; font-size:1.2em;">留低</button>
+    </div>
   </div>
 </div>
 </body>
