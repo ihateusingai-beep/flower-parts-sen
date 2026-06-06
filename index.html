@@ -140,6 +140,10 @@ input[type="range"] {
   font-size: 0.9em;
   color: #777777;
 }
+
+.hub-status { font-size: 0.95em; padding: 6px 14px; border-radius: 20px; display: inline-block; }
+.hub-status.done { background: #58cc02; color: #fff; font-weight: 700; }
+.hub-status.locked { background: #f7f7f7; color: #afafaf; font-weight: 600; }
 </style>
 </head>
 <body>
@@ -162,7 +166,35 @@ input[type="range"] {
   <div style="max-width:420px; width:100%; text-align:center;">
     <div id="hubGreeting" style="font-size:1.8em; margin-bottom:24px; font-weight:700;"></div>
     
+    
     <div class="hub-grid">
+      <div class="hub-card" onclick="initSlides()">
+        <div class="hub-icon">📖</div>
+        <div class="hub-title">花的故事</div>
+        <div class="hub-status" id="hubSlides">🔓 可選</div>
+      </div>
+      <div class="hub-card" onclick="goTo('parts')">
+        <div class="hub-icon">📜</div>
+        <div class="hub-title">部分詳解</div>
+        <div class="hub-status" id="hubParts">🔓 可選</div>
+      </div>
+      <div class="hub-card" onclick="goTo('match')">
+        <div class="hub-icon">🔗</div>
+        <div class="hub-title">功能配對</div>
+        <div class="hub-status" id="hubMatch">🔓 可選</div>
+      </div>
+      <div class="hub-card" onclick="goTo('vocab')">
+        <div class="hub-icon">📚</div>
+        <div class="hub-title">詞語學習</div>
+        <div class="hub-status" id="hubVocab">🔓 可選</div>
+      </div>
+      <div class="hub-card" onclick="goTo('quiz')">
+        <div class="hub-icon">📝</div>
+        <div class="hub-title">小評估</div>
+        <div class="hub-status" id="hubQuiz">🔓 可選</div>
+      </div>
+    </div>
+
       <div class="hub-card" onclick="initSlides()">
         <div class="hub-icon">📖</div>
         <div class="hub-title">花的故事</div>
@@ -347,7 +379,7 @@ function renderSlide() {
 function nextSlide() {
   currentSlideIndex = (currentSlideIndex + 1) % flowerSlides.length;
   renderSlide();
-  if (currentSlideIndex === 0) markCompleted("slides");
+  if (currentSlideIndex === 0) { markCompleted("slides"); updateHubStatus(); }
 }
 
 function prevSlide() {
@@ -377,18 +409,23 @@ function matchRight(num) {
 function checkMatch() {
   if (matchLeftChoice && matchRightChoice) {
     const result = document.getElementById('matchResult');
+    const cards = document.querySelectorAll('#match .hub-card, #match div[onclick]');
+    
     if (matchLeftChoice === matchRightChoice) {
-      result.innerHTML = '✅ 正確！';
+      result.innerHTML = '✅ 正確！做得好！';
       result.style.color = '#58cc02';
+      showConfetti();
+      speak('正確！');
     } else {
       result.innerHTML = '❌ 唔啱，再試一次';
       result.style.color = '#ff4b4b';
+      speak('唔啱');
     }
     setTimeout(() => {
       result.innerHTML = '';
       matchLeftChoice = null;
       matchRightChoice = null;
-    }, 1500);
+    }, 1800);
   }
 }
 
@@ -399,6 +436,8 @@ const easyQuestions = [
   { q: "呢張圖係邊個？", img: "assets/images/02_stamen_closeup.png", opts: ["雄蕊", "雌蕊", "花瓣"], ans: 0 },
   { q: "呢張圖係邊個？", img: "assets/images/03_pistil_closeup.png", opts: ["雄蕊", "雌蕊", "花瓣"], ans: 1 },
   { q: "邊個係花粉？", img: "assets/images/05_pollen_grains.png", opts: ["花粉", "種子", "花瓣"], ans: 0 },
+  { q: "呢張圖係邊個？", img: "assets/images/04_flower_cross_section.png", opts: ["雄蕊", "雌蕊", "花瓣"], ans: 0 },
+  { q: "邊個係種子？", img: "assets/images/06_ovary_seeds.png", opts: ["花粉", "種子", "花瓣"], ans: 1 },
 ];
 
 // 中階（Medium）- 簡單功能
@@ -406,6 +445,8 @@ const mediumQuestions = [
   { q: "雄蕊做咩？", img: "assets/images/02_stamen_closeup.png", opts: ["生花粉", "生種子", "接收花粉"], ans: 0 },
   { q: "雌蕊做咩？", img: "assets/images/03_pistil_closeup.png", opts: ["生花粉", "生種子", "傳播花粉"], ans: 1 },
   { q: "花粉喺邊度？", img: "assets/images/05_pollen_grains.png", opts: ["雄蕊", "雌蕊", "花瓣"], ans: 0 },
+  { q: "授粉前花粉喺邊度？", img: "assets/images/07_pollination_before.png", opts: ["雄蕊", "雌蕊", "花瓣"], ans: 0 },
+  { q: "授粉後花粉去邊度？", img: "assets/images/08_pollination_after.png", opts: ["雄蕊", "雌蕊", "花瓣"], ans: 1 },
 ];
 
 // 高階（Hard）- 保留原有較難問題
@@ -413,6 +454,8 @@ const hardQuestions = [
   { q: "呢個係邊個部分？", img: "assets/images/11_assess_flower1.png", opts: ["雄蕊", "雌蕊", "花瓣"], ans: 0 },
   { q: "雄蕊嘅功能係？", img: "assets/images/02_stamen_closeup.png", opts: ["產生花粉", "產生種子", "接收花粉"], ans: 0 },
   { q: "雌蕊嘅功能係？", img: "assets/images/03_pistil_closeup.png", opts: ["產生花粉", "產生種子", "傳播花粉"], ans: 1 },
+  { q: "花粉管做咩？", img: "assets/images/09_pollen_tube.png", opts: ["傳播花粉", "生長到子房", "產生種子"], ans: 1 },
+  { q: "種子喺邊度形成？", img: "assets/images/06_ovary_seeds.png", opts: ["雄蕊", "雌蕊", "花瓣"], ans: 1 },
 ];
 
 let currentQuestions = easyQuestions;
@@ -491,7 +534,17 @@ function checkAnswer(choice) {
 }
 
 function updateHubStatus() {
-  // Can be expanded later with visual indicators
+  const done = '<span class="hub-status done">✅ 完成</span>';
+  const locked = '<span class="hub-status locked">🔓 可選</span>';
+  
+  const sections = ['slides', 'parts', 'match', 'vocab', 'quiz'];
+  sections.forEach(section => {
+    const el = document.getElementById('hub' + section.charAt(0).toUpperCase() + section.slice(1));
+    if (el) {
+      el.innerHTML = state.completed[section] ? done : locked;
+    }
+  });
+  
   localStorage.setItem('flowerCompleted', JSON.stringify(state.completed));
 }
 
