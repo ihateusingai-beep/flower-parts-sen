@@ -76,9 +76,74 @@ body {
 }
 .hub-icon { font-size: 2.4em; margin-bottom: 8px; }
 .hub-title { font-size: 1.3em; font-weight: 700; }
+
+/* Preference Button */
+.pref-btn {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  width: 48px;
+  height: 48px;
+  background: #1cb0f6;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-size: 1.4em;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 2px 0 #0d8ed1;
+}
+
+/* Settings Panel */
+.settings-panel {
+  position: fixed;
+  top: 0;
+  right: -320px;
+  width: 300px;
+  height: 100vh;
+  background: #ffffff;
+  border-left: 3px solid #e5e5e5;
+  padding: 24px;
+  z-index: 1001;
+  transition: right 0.3s ease;
+  box-shadow: -4px 0 12px rgba(0,0,0,0.1);
+}
+.settings-panel.show {
+  right: 0;
+}
+.settings-title {
+  font-size: 1.5em;
+  font-weight: 800;
+  margin-bottom: 24px;
+  color: #3c3c3c;
+}
+.setting-row {
+  margin-bottom: 24px;
+}
+.setting-label {
+  font-size: 1.1em;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: block;
+}
+.setting-val {
+  color: #58cc02;
+  font-weight: 800;
+}
+input[type="range"] {
+  width: 100%;
+  margin: 8px 0;
+}
+.speed-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9em;
+  color: #777777;
+}
 </style>
 </head>
 <body>
+<button class="pref-btn" onclick="toggleSettings()">⚙️</button>
 
 <!-- HOME -->
 <div id="home" class="page active">
@@ -150,6 +215,79 @@ function loadName() {
 }
 
 window.onload = loadName;
+
+let settings = {
+  fontSize: 2,
+  speed: 0.85
+};
+
+function loadSettings() {
+  const saved = localStorage.getItem('flowerSettings');
+  if (saved) {
+    try { settings = JSON.parse(saved); } catch(e) {}
+  }
+  applySettings();
+}
+
+function saveSettings() {
+  localStorage.setItem('flowerSettings', JSON.stringify(settings));
+}
+
+function applySettings() {
+  const sizeMap = {1: '16px', 2: '18px', 3: '22px'};
+  document.body.style.fontSize = sizeMap[settings.fontSize];
+  
+  const speedVal = document.getElementById('speedVal');
+  if (speedVal) speedVal.textContent = settings.speed < 0.7 ? '慢' : settings.speed > 0.9 ? '快' : '正常';
+}
+
+function updateFontSize(val) {
+  settings.fontSize = parseInt(val);
+  applySettings();
+  saveSettings();
+}
+
+function updateSpeed(val) {
+  settings.speed = parseFloat(val);
+  applySettings();
+  saveSettings();
+}
+
+function toggleSettings() {
+  const panel = document.getElementById('settingsPanel');
+  panel.classList.toggle('show');
+}
+
+function speak(text) {
+  if ('speechSynthesis' in window) {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'zh-HK';
+    u.rate = settings.speed;
+    speechSynthesis.speak(u);
+  }
+}
+
+window.onload = function() {
+  loadName();
+  loadSettings();
+};
 </script>
+
+<!-- Settings Panel -->
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-title">⚙️ 學習設定</div>
+  
+  <div class="setting-row">
+    <div class="setting-label">字體大小 <span class="setting-val" id="fontSizeVal">中</span></div>
+    <input type="range" id="fontSizeSlider" min="1" max="3" step="1" value="2" oninput="updateFontSize(this.value)">
+  </div>
+  
+  <div class="setting-row">
+    <div class="setting-label">說話速度 <span class="setting-val" id="speedVal">正常</span></div>
+    <input type="range" id="speedSlider" min="0.5" max="1.0" step="0.1" value="0.85" oninput="updateSpeed(this.value)">
+    <div class="speed-labels"><span>🐢 慢</span><span>🐇 快</span></div>
+  </div>
+</div>
 </body>
 </html>
