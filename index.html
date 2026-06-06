@@ -509,6 +509,7 @@ function checkAnswer(choice) {
     result.style.color = '#58cc02';
     showConfetti();
     setTimeout(() => {
+      if (!state.completed.quiz) markCompleted('quiz');
       showCertificate(100);
     }, 1500);
   } else {
@@ -526,6 +527,7 @@ function checkAnswer(choice) {
     result.innerHTML = '✅ 正確！呢個係雄蕊';
     result.style.color = '#58cc02';
     setTimeout(() => {
+      if (!state.completed.quiz) markCompleted('quiz');
       showCertificate(100);
     }, 1500);
   } else {
