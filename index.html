@@ -394,34 +394,82 @@ function checkMatch() {
 
 
 let currentQuizLevel = 1;
-let quizQuestions = [
+let // 初階（Easy）- 純識圖
+const easyQuestions = [
+  { q: "呢張圖係邊個？", img: "assets/images/02_stamen_closeup.png", opts: ["雄蕊", "雌蕊", "花瓣"], ans: 0 },
+  { q: "呢張圖係邊個？", img: "assets/images/03_pistil_closeup.png", opts: ["雄蕊", "雌蕊", "花瓣"], ans: 1 },
+  { q: "邊個係花粉？", img: "assets/images/05_pollen_grains.png", opts: ["花粉", "種子", "花瓣"], ans: 0 },
+];
+
+// 中階（Medium）- 簡單功能
+const mediumQuestions = [
+  { q: "雄蕊做咩？", img: "assets/images/02_stamen_closeup.png", opts: ["生花粉", "生種子", "接收花粉"], ans: 0 },
+  { q: "雌蕊做咩？", img: "assets/images/03_pistil_closeup.png", opts: ["生花粉", "生種子", "傳播花粉"], ans: 1 },
+  { q: "花粉喺邊度？", img: "assets/images/05_pollen_grains.png", opts: ["雄蕊", "雌蕊", "花瓣"], ans: 0 },
+];
+
+// 高階（Hard）- 保留原有較難問題
+const hardQuestions = [
   { q: "呢個係邊個部分？", img: "assets/images/11_assess_flower1.png", opts: ["雄蕊", "雌蕊", "花瓣"], ans: 0 },
   { q: "雄蕊嘅功能係？", img: "assets/images/02_stamen_closeup.png", opts: ["產生花粉", "產生種子", "接收花粉"], ans: 0 },
   { q: "雌蕊嘅功能係？", img: "assets/images/03_pistil_closeup.png", opts: ["產生花粉", "產生種子", "傳播花粉"], ans: 1 },
 ];
 
+let currentQuestions = easyQuestions;
+
+
+function renderCurrentQuiz() {
+  if (!currentQuestions || currentQuestions.length === 0) return;
+  
+  const q = currentQuestions[0]; // Show first question for now
+  document.getElementById('quizImg').src = q.img;
+  document.getElementById('quizQuestion').innerHTML = q.q;
+  
+  for (let i = 0; i < 3; i++) {
+    const btn = document.getElementById('opt' + i);
+    if (btn) btn.innerHTML = (['A','B','C'][i] + '. ' + q.opts[i]);
+  }
+}
+
+// Update startQuizLevel to render question
 function startQuizLevel(level) {
   currentQuizLevel = level;
-  // For now, just show the first question
+  if (level === 1) currentQuestions = easyQuestions;
+  else if (level === 2) currentQuestions = mediumQuestions;
+  else currentQuestions = hardQuestions;
+  
+  goTo('quiz');
+  document.getElementById('quizResult').innerHTML = '';
+  setTimeout(renderCurrentQuiz, 100);
+}
+
+function startQuizLevel(level) {
+  currentQuizLevel = level;
+  if (level === 1) currentQuestions = easyQuestions;
+  else if (level === 2) currentQuestions = mediumQuestions;
+  else currentQuestions = hardQuestions;
+  
   goTo('quiz');
   document.getElementById('quizResult').innerHTML = '';
 }
 
 function checkAnswer(choice) {
   const result = document.getElementById('quizResult');
-  if (choice === 0) {
-    result.innerHTML = '✅ 正確！';
+  const q = currentQuestions[0];
+  
+  if (choice === q.ans) {
+    result.innerHTML = '✅ 正確！做得好！';
     result.style.color = '#58cc02';
     showConfetti();
     setTimeout(() => {
       showCertificate(100);
     }, 1500);
   } else {
-    result.innerHTML = '❌ 唔啱，再試一次';
+    result.innerHTML = '❌ 唔啱，正確答案係：' + q.opts[q.ans];
     result.style.color = '#ff4b4b';
     setTimeout(() => {
       result.innerHTML = '';
-    }, 1500);
+    }, 2000);
   }
 }
 
@@ -682,13 +730,13 @@ document.head.appendChild(style);
     <div style="font-size:1.8em; font-weight:800; margin-bottom:16px;">📝 小評估</div>
     
     <div style="background:#fff; border:2px solid #e5e5e5; border-radius:16px; padding:20px; margin-bottom:20px;">
-      <img src="assets/images/11_assess_flower1.png" style="width:100%; border-radius:12px; margin-bottom:16px;">
-      <div style="font-size:1.4em; margin-bottom:16px;">呢個係邊個部分？</div>
+      <img id="quizImg" src="" style="width:100%; border-radius:12px; margin-bottom:16px;">
+      <div id="quizQuestion" style="font-size:1.4em; margin-bottom:16px;"></div>
       
       <div style="display:flex; flex-direction:column; gap:12px;">
-        <button onclick="checkAnswer(1)" style="padding:14px; background:#fff; border:3px solid #e5e5e5; border-radius:12px; font-size:1.2em;">A. 雄蕊</button>
-        <button onclick="checkAnswer(2)" style="padding:14px; background:#fff; border:3px solid #e5e5e5; border-radius:12px; font-size:1.2em;">B. 雌蕊</button>
-        <button onclick="checkAnswer(3)" style="padding:14px; background:#fff; border:3px solid #e5e5e5; border-radius:12px; font-size:1.2em;">C. 花瓣</button>
+        <button onclick="checkAnswer(0)" style="padding:14px; background:#fff; border:3px solid #e5e5e5; border-radius:12px; font-size:1.2em;" id="opt0"></button>
+        <button onclick="checkAnswer(1)" style="padding:14px; background:#fff; border:3px solid #e5e5e5; border-radius:12px; font-size:1.2em;" id="opt1"></button>
+        <button onclick="checkAnswer(2)" style="padding:14px; background:#fff; border:3px solid #e5e5e5; border-radius:12px; font-size:1.2em;" id="opt2"></button>
       </div>
     </div>
     
