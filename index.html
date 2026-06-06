@@ -272,6 +272,25 @@ window.onload = function() {
   loadName();
   loadSettings();
 };
+
+let currentMode = 1;
+
+function selectMode(mode) {
+  currentMode = mode;
+  const titles = {
+    1: "🖼️ 識圖模式",
+    2: "🔗 功能配對模式", 
+    3: "📝 選擇題模式"
+  };
+  document.getElementById('modeTitle').textContent = titles[mode];
+  goTo('difficulty');
+}
+
+function startAssessment(level) {
+  // Placeholder for now - will implement full logic next
+  alert('模式 ' + currentMode + ' | 難度 ' + level + '（框架已就緒）');
+  goTo('hub');
+}
 </script>
 
 <!-- Settings Panel -->
@@ -287,6 +306,48 @@ window.onload = function() {
     <div class="setting-label">說話速度 <span class="setting-val" id="speedVal">正常</span></div>
     <input type="range" id="speedSlider" min="0.5" max="1.0" step="0.1" value="0.85" oninput="updateSpeed(this.value)">
     <div class="speed-labels"><span>🐢 慢</span><span>🐇 快</span></div>
+  </div>
+</div>
+
+<!-- ASSESSMENT MODES -->
+<div id="quiz" class="page">
+  <div style="max-width:420px; width:100%; text-align:center;">
+    <div style="font-size:1.8em; font-weight:800; margin-bottom:24px;">📝 選擇評估模式</div>
+    
+    <div style="display:flex; flex-direction:column; gap:16px; margin-bottom:24px;">
+      <button onclick="selectMode(1)" style="padding:20px; font-size:1.4em; background:#fff; border:3px solid #e5e5e5; border-radius:16px; cursor:pointer;">
+        🖼️ 識圖模式<br><span style="font-size:0.8em; color:#777;">點擊正確部位</span>
+      </button>
+      <button onclick="selectMode(2)" style="padding:20px; font-size:1.4em; background:#fff; border:3px solid #e5e5e5; border-radius:16px; cursor:pointer;">
+        🔗 功能配對<br><span style="font-size:0.8em; color:#777;">配對雄蕊/雌蕊功能</span>
+      </button>
+      <button onclick="selectMode(3)" style="padding:20px; font-size:1.4em; background:#fff; border:3px solid #e5e5e5; border-radius:16px; cursor:pointer;">
+        📝 選擇題<br><span style="font-size:0.8em; color:#777;">A/B/C/D 選擇</span>
+      </button>
+    </div>
+    
+    <button onclick="goTo('hub')" style="padding:14px 32px; background:#fff; border:2px solid #e5e5e5; border-radius:12px; font-size:1.1em;">🏠 返回中心</button>
+  </div>
+</div>
+
+<!-- DIFFICULTY SELECTION -->
+<div id="difficulty" class="page">
+  <div style="max-width:420px; width:100%; text-align:center;">
+    <div id="modeTitle" style="font-size:1.6em; font-weight:800; margin-bottom:24px;"></div>
+    
+    <div style="display:flex; flex-direction:column; gap:16px; margin-bottom:24px;">
+      <button onclick="startAssessment(1)" style="padding:18px; font-size:1.3em; background:#dbf8c5; border:3px solid #58cc02; border-radius:16px; cursor:pointer;">
+        🟢 初階（容易）
+      </button>
+      <button onclick="startAssessment(2)" style="padding:18px; font-size:1.3em; background:#fff; border:3px solid #e5e5e5; border-radius:16px; cursor:pointer;">
+        🟡 中階（普通）
+      </button>
+      <button onclick="startAssessment(3)" style="padding:18px; font-size:1.3em; background:#fff; border:3px solid #e5e5e5; border-radius:16px; cursor:pointer;">
+        🔴 高階（較難）
+      </button>
+    </div>
+    
+    <button onclick="goTo('quiz')" style="padding:14px 32px; background:#fff; border:2px solid #e5e5e5; border-radius:12px; font-size:1.1em;">⬅️ 返回模式選擇</button>
   </div>
 </div>
 </body>
