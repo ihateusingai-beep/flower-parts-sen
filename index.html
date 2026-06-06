@@ -419,6 +419,7 @@ function checkMatch() {
       result.style.color = '#58cc02';
       showConfetti();
       speak('正確！');
+      if (!state.completed.match) markCompleted('match');
     } else {
       result.innerHTML = '❌ 唔啱，再試一次';
       result.style.color = '#ff4b4b';
