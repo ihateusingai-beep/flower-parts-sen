@@ -792,7 +792,7 @@ function addExitConfirm() {
       </div>
     </div>
     
-    <button onclick="goTo('hub')" style="padding:14px 32px; background:#fff; border:2px solid #e5e5e5; border-radius:12px; font-size:1.1em;">🏠 返回中心</button>
+    <button onclick="if (!state.completed.vocab) markCompleted('vocab'); goTo('hub')" style="padding:14px 32px; background:#fff; border:2px solid #e5e5e5; border-radius:12px; font-size:1.1em;">🏠 返回中心</button>
   </div>
 </div>
 
