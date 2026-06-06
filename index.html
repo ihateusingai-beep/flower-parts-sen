@@ -345,6 +345,54 @@ function initSlides() {
   renderSlide();
   goTo('slides');
 }
+
+let matchLeftChoice = null;
+let matchRightChoice = null;
+
+function matchLeft(num) {
+  matchLeftChoice = num;
+  checkMatch();
+}
+
+function matchRight(num) {
+  matchRightChoice = num;
+  checkMatch();
+}
+
+function checkMatch() {
+  if (matchLeftChoice && matchRightChoice) {
+    const result = document.getElementById('matchResult');
+    if (matchLeftChoice === matchRightChoice) {
+      result.innerHTML = '✅ 正確！';
+      result.style.color = '#58cc02';
+    } else {
+      result.innerHTML = '❌ 唔啱，再試一次';
+      result.style.color = '#ff4b4b';
+    }
+    setTimeout(() => {
+      result.innerHTML = '';
+      matchLeftChoice = null;
+      matchRightChoice = null;
+    }, 1500);
+  }
+}
+
+function checkAnswer(choice) {
+  const result = document.getElementById('quizResult');
+  if (choice === 1) {
+    result.innerHTML = '✅ 正確！呢個係雄蕊';
+    result.style.color = '#58cc02';
+    setTimeout(() => {
+      showCertificate(100);
+    }, 1500);
+  } else {
+    result.innerHTML = '❌ 唔啱，再試一次';
+    result.style.color = '#ff4b4b';
+    setTimeout(() => {
+      result.innerHTML = '';
+    }, 1500);
+  }
+}
 </script>
 
 <!-- Settings Panel -->
@@ -463,6 +511,79 @@ function initSlides() {
         <div style="font-size:1.2em; color:#666;">負責接收花粉同產生種子</div>
       </div>
     </div>
+    
+    <button onclick="goTo('hub')" style="padding:14px 32px; background:#fff; border:2px solid #e5e5e5; border-radius:12px; font-size:1.1em;">🏠 返回中心</button>
+  </div>
+</div>
+
+<!-- MATCHING -->
+<div id="match" class="page">
+  <div style="max-width:420px; width:100%; text-align:center;">
+    <div style="font-size:1.8em; font-weight:800; margin-bottom:16px;">🔗 功能配對</div>
+    <div style="font-size:1.2em; color:#666; margin-bottom:20px;">點擊左邊配對右邊</div>
+    
+    <div style="display:flex; gap:20px; justify-content:center; margin-bottom:24px;">
+      <div>
+        <div onclick="matchLeft(1)" style="background:#fff; border:3px solid #e5e5e5; border-radius:16px; padding:12px; margin-bottom:12px; cursor:pointer;">
+          <img src="assets/images/14_match_stamen.png" style="width:120px; border-radius:12px;">
+        </div>
+        <div onclick="matchLeft(2)" style="background:#fff; border:3px solid #e5e5e5; border-radius:16px; padding:12px; cursor:pointer;">
+          <img src="assets/images/15_match_pistil.png" style="width:120px; border-radius:12px;">
+        </div>
+      </div>
+      <div>
+        <div onclick="matchRight(1)" style="background:#fff; border:3px solid #e5e5e5; border-radius:16px; padding:16px; margin-bottom:12px; cursor:pointer; font-size:1.2em;">
+          產生花粉
+        </div>
+        <div onclick="matchRight(2)" style="background:#fff; border:3px solid #e5e5e5; border-radius:16px; padding:16px; cursor:pointer; font-size:1.2em;">
+          產生種子
+        </div>
+      </div>
+    </div>
+    
+    <div id="matchResult" style="font-size:1.4em; min-height:40px; margin-bottom:20px;"></div>
+    
+    <button onclick="goTo('hub')" style="padding:14px 32px; background:#fff; border:2px solid #e5e5e5; border-radius:12px; font-size:1.1em;">🏠 返回中心</button>
+  </div>
+</div>
+
+<!-- VOCAB -->
+<div id="vocab" class="page">
+  <div style="max-width:420px; width:100%; text-align:center;">
+    <div style="font-size:1.8em; font-weight:800; margin-bottom:16px;">📚 詞語學習</div>
+    
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px;">
+      <div onclick="speak('雄蕊')" style="background:#fff; border:2px solid #e5e5e5; border-radius:16px; padding:16px; cursor:pointer;">
+        <img src="assets/images/02_stamen_closeup.png" style="width:100%; border-radius:12px; margin-bottom:8px;">
+        <div style="font-size:1.4em; font-weight:700;">雄蕊</div>
+      </div>
+      <div onclick="speak('雌蕊')" style="background:#fff; border:2px solid #e5e5e5; border-radius:16px; padding:16px; cursor:pointer;">
+        <img src="assets/images/03_pistil_closeup.png" style="width:100%; border-radius:12px; margin-bottom:8px;">
+        <div style="font-size:1.4em; font-weight:700;">雌蕊</div>
+      </div>
+    </div>
+    
+    <button onclick="goTo('hub')" style="padding:14px 32px; background:#fff; border:2px solid #e5e5e5; border-radius:12px; font-size:1.1em;">🏠 返回中心</button>
+  </div>
+</div>
+
+<!-- SIMPLE ASSESSMENT -->
+<div id="quiz" class="page">
+  <div style="max-width:420px; width:100%; text-align:center;">
+    <div style="font-size:1.8em; font-weight:800; margin-bottom:16px;">📝 小評估</div>
+    
+    <div style="background:#fff; border:2px solid #e5e5e5; border-radius:16px; padding:20px; margin-bottom:20px;">
+      <img src="assets/images/11_assess_flower1.png" style="width:100%; border-radius:12px; margin-bottom:16px;">
+      <div style="font-size:1.4em; margin-bottom:16px;">呢個係邊個部分？</div>
+      
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <button onclick="checkAnswer(1)" style="padding:14px; background:#fff; border:3px solid #e5e5e5; border-radius:12px; font-size:1.2em;">A. 雄蕊</button>
+        <button onclick="checkAnswer(2)" style="padding:14px; background:#fff; border:3px solid #e5e5e5; border-radius:12px; font-size:1.2em;">B. 雌蕊</button>
+        <button onclick="checkAnswer(3)" style="padding:14px; background:#fff; border:3px solid #e5e5e5; border-radius:12px; font-size:1.2em;">C. 花瓣</button>
+      </div>
+    </div>
+    
+    <div id="quizResult" style="font-size:1.4em; min-height:40px; margin-bottom:20px;"></div>
     
     <button onclick="goTo('hub')" style="padding:14px 32px; background:#fff; border:2px solid #e5e5e5; border-radius:12px; font-size:1.1em;">🏠 返回中心</button>
   </div>
