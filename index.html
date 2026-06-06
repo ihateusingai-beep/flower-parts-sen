@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>花的部分 - SEN 學習</title>
+<style>
+:root {
+  --owl-green: #58cc02;
+  --owl-green-deep: #58a700;
+  --snow: #ffffff;
+  --eel: #f7f7f7;
+  --swan: #e5e5e5;
+  --wolf: #777777;
+  --eel-black: #3c3c3c;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { 
+  font-family: 'Microsoft JhengHei', system-ui, sans-serif; 
+  background: #f7f7f7; 
+  min-height: 100vh; 
+  color: #3c3c3c;
+}
+.page { display: none; min-height: 100vh; padding: 20px; }
+.page.active { display: flex; flex-direction: column; align-items: center; }
+
+/* HOME */
+#home { justify-content: center; background: #f7f7f7; }
+.home-card { 
+  background: #ffffff; 
+  border: 2px solid #e5e5e5; 
+  border-bottom: 4px solid #e5e5e5; 
+  border-radius: 16px; 
+  padding: 32px; 
+  max-width: 420px; 
+  width: 100%; 
+  text-align: center; 
+  box-shadow: 0 2px 0 #d7d7d7;
+}
+.home-title { font-size: 2.4em; font-weight: 800; margin-bottom: 12px; }
+.name-input { 
+  width: 100%; 
+  padding: 16px; 
+  font-size: 1.4em; 
+  border: 3px solid #e5e5e5; 
+  border-radius: 12px; 
+  margin-bottom: 20px; 
+  text-align: center; 
+}
+.start-btn { 
+  background: #58cc02; 
+  color: #fff; 
+  border: none; 
+  padding: 18px 48px; 
+  font-size: 1.4em; 
+  font-weight: 800; 
+  border-radius: 16px; 
+  cursor: pointer; 
+  width: 100%; 
+  border-bottom: 4px solid #58a700;
+}
+.start-btn:hover { background: #89e219; }
+
+/* HUB */
+#hub { background: #f7f7f7; justify-content: center; }
+.hub-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; max-width: 420px; }
+.hub-card { 
+  background: #ffffff; 
+  border: 2px solid #e5e5e5; 
+  border-bottom: 4px solid #e5e5e5; 
+  border-radius: 16px; 
+  padding: 20px; 
+  cursor: pointer; 
+  text-align: center;
+  box-shadow: 0 2px 0 #d7d7d7;
+}
+.hub-icon { font-size: 2.4em; margin-bottom: 8px; }
+.hub-title { font-size: 1.3em; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div id="home" class="page active">
+  <div class="home-card">
+    <div class="home-title">🌸 花的部分</div>
+    <p style="font-size:1.3em; margin-bottom:24px; color:#666;">SEN 科學學習</p>
+    
+    <input type="text" id="studentName" class="name-input" placeholder="輸入你的名字" value="">
+    
+    <button class="start-btn" onclick="startLearning()">開始學習</button>
+  </div>
+</div>
+
+<!-- HUB -->
+<div id="hub" class="page">
+  <div style="max-width:420px; width:100%; text-align:center;">
+    <div id="hubGreeting" style="font-size:1.8em; margin-bottom:24px; font-weight:700;"></div>
+    
+    <div class="hub-grid">
+      <div class="hub-card" onclick="goTo('slides')">
+        <div class="hub-icon">📖</div>
+        <div class="hub-title">花的故事</div>
+      </div>
+      <div class="hub-card" onclick="goTo('parts')">
+        <div class="hub-icon">📜</div>
+        <div class="hub-title">部分詳解</div>
+      </div>
+      <div class="hub-card" onclick="goTo('match')">
+        <div class="hub-icon">✍️</div>
+        <div class="hub-title">功能配對</div>
+      </div>
+      <div class="hub-card" onclick="goTo('vocab')">
+        <div class="hub-icon">📚</div>
+        <div class="hub-title">詞語學習</div>
+      </div>
+      <div class="hub-card" onclick="goTo('quiz')">
+        <div class="hub-icon">📝</div>
+        <div class="hub-title">小評估</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let state = {
+  name: '',
+  completed: { slides: false, parts: false, match: false, vocab: false, quiz: false }
+};
+
+function startLearning() {
+  const nameInput = document.getElementById('studentName').value.trim();
+  state.name = nameInput || '同學';
+  localStorage.setItem('flowerStudentName', state.name);
+  
+  document.getElementById('hubGreeting').textContent = '👋 ' + state.name + '，準備好學習花的知識了嗎？';
+  goTo('hub');
+}
+
+function goTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(page).classList.add('active');
+}
+
+function loadName() {
+  const saved = localStorage.getItem('flowerStudentName');
+  if (saved) {
+    document.getElementById('studentName').value = saved;
+  }
+}
+
+window.onload = loadName;
+</script>
+</body>
+</html>
