@@ -346,19 +346,7 @@ const flowerSlides = [
 function renderSlide() {
   const slide = flowerSlides[currentSlideIndex];
   document.getElementById('slideImg').src = slide.img;
-  const svg = document.getElementById('slideSvg');
-  if (svg) {
-    svg.innerHTML = "";
-    const t = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    t.setAttribute("x", "50%");
-    t.setAttribute("y", "92%");
-    t.setAttribute("text-anchor", "middle");
-    t.setAttribute("fill", "#1a1a2e");
-    t.setAttribute("font-size", "18");
-    t.setAttribute("font-family", "Microsoft JhengHei, sans-serif");
-    t.textContent = slide.text;
-    svg.appendChild(t);
-  }
+  document.getElementById('slideText').innerHTML = slide.text;
 }
 
 function nextSlide() {
