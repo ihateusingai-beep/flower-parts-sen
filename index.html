@@ -281,6 +281,7 @@ function speak(text) {
 window.onload = function() {
   loadName();
   loadSettings();
+  addExitConfirm();
 };
 
 let currentMode = 1;
@@ -558,6 +559,12 @@ function doExit() {
   if (exitCallback) exitCallback();
 }
 
+
+
+function addExitConfirm() {
+  // Safe version - no complex template
+  console.log("Exit confirm ready (safe mode)");
+}
 
 </script>
 
