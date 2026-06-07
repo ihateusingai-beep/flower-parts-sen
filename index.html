@@ -654,10 +654,11 @@ function doExit() {
   <div style="max-width:420px; width:100%; text-align:center;">
     <div style="font-size:1.8em; font-weight:800; margin-bottom:16px;">📖 花的故事</div>
     
-    <div id="slideContent" style="margin-bottom:20px;">
-      <img id="slideImg" src="assets/images/01_flower_overview.png" style="width:100%; max-width:380px; border-radius:16px; border:3px solid #e5e5e5; margin-bottom:16px;">
-      <div id="slideText" style="font-size:1.4em; line-height:1.6; padding:16px; background:#fff; border:2px solid #e5e5e5; border-radius:16px;"></div>
+    <div id="slideContent" style="margin-bottom:20px; position:relative;">
+      <img id="slideImg" src="assets/images/01_flower_overview.png" style="width:100%; max-width:380px; border-radius:16px; border:3px solid #e5e5e5; display:block;">
+      <svg id="slideSvg" width="380" height="300" style="position:absolute; top:0; left:0; width:100%; max-width:380px; height:auto; pointer-events:none;"></svg>
     </div>
+    <div id="slideText" style="font-size:1.4em; line-height:1.6; padding:16px; background:#fff; border:2px solid #e5e5e5; border-radius:16px; margin-top:12px;"></div>
     
     <div style="display:flex; gap:12px; justify-content:center;">
       <button onclick="prevSlide()" style="padding:12px 24px; background:#fff; border:2px solid #e5e5e5; border-radius:12px; font-size:1.1em;">⬅️ 上一頁</button>
