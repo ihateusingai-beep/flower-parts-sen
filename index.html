@@ -583,13 +583,6 @@ function doExit() {
 }
 
 // Add exit confirmation to back buttons
-function addExitConfirm() {
-  const backBtns = document.querySelectorAll('.btn-back, button[onclick*="goTo('hub')"]');
-  backBtns.forEach(btn => {
-    const originalOnclick = btn.getAttribute('onclick');
-    if (originalOnclick && originalOnclick.includes('goTo')) {
-      btn.setAttribute('onclick', 'showExitConfirm(function() { ' + originalOnclick + ' }); event.stopImmediatePropagation();');
-    }
   });
 }
 </script>
