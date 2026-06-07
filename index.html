@@ -588,7 +588,7 @@ function addExitConfirm() {
   backBtns.forEach(btn => {
     const originalOnclick = btn.getAttribute('onclick');
     if (originalOnclick && originalOnclick.includes('goTo')) {
-      btn.setAttribute('onclick', `showExitConfirm(() => { ${originalOnclick} }); event.stopImmediatePropagation();`);
+      btn.setAttribute('onclick', 'showExitConfirm(function() { ' + originalOnclick + ' }); event.stopImmediatePropagation();');
     }
   });
 }
